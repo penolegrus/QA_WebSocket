@@ -56,7 +56,8 @@ public class Client extends WebSocketClient {
     public void onMessage(String message) {
         System.out.println("Received new message " + message);
         context.getMessageList().add(message); //сохраняем все новые сообщения в список
-        if(message.equals(context.getExpectedMessage())){ //завершаем подключение к сокету если ожидаемое сообщение пришло
+        String expectedMessage = context.getExpectedMessage();
+        if(expectedMessage != null && expectedMessage.equals(message)){//завершаем подключение к сокету если ожидаемое сообщение пришло
             closeConnection(1000,"Received expected message");
         }
     }

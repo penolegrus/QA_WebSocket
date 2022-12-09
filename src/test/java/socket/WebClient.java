@@ -26,6 +26,7 @@ public class WebClient {
      */
     public void connectToSocket(SocketContext context){
         boolean isBodySent = false;
+        boolean isRunnableSent = false;
         try {
             client = new Client(context);
             if (!context.getRequestHeaders().isEmpty()) { //добавляем хэдеры из контекста в подключение к вебсокету
@@ -39,16 +40,13 @@ public class WebClient {
                 if (client.getAliveTime() >= context.getTimeOut()) { //если общее время подключения сокета превышает таймаут
                     client.close(1006, "Time Out"); //закрываем сокет и завершаем поток
                 }
-                if (context.getRunnable() != null) { //если есть запускаемая задача, то она запускается
+                if (context.getRunnable() != null && !isRunnableSent) { //если есть запускаемая задача, то она запускается
                     context.getRunnable().run();
+                    isRunnableSent = true;
                 }
                 if (context.getBody() != null && !isBodySent) { //есть есть тело, которое нужно отправить, то отправляем
                     client.send(context.getBody());
                     isBodySent = true;
-                }
-                if (context.getExpectedMessage() != null) { //если есть ожидаемое сообщение, то ассертим его и закрываем поток
-                    client.onMessage(context.getExpectedMessage());
-                    return;
                 }
             }
         } catch (URISyntaxException | InterruptedException e) {

@@ -118,6 +118,7 @@ public class SocketTests {
         context.setRunnable(sendUIMessage);
 
         WebClient.getInstance().connectToSocket(context);
+        Assertions.assertNotEquals(context.getStatusCode(), 1006, "Expected message not received");
     }
 
     /**
@@ -141,6 +142,7 @@ public class SocketTests {
         context.setTimeOut(5);
 
         WebClient.getInstance().connectToSocket(context);
+        Assertions.assertNotEquals(context.getStatusCode(), 1006, "Expected message not received");
         consoleLogs.shouldHave(Condition.partialText(expectedMessage));
     }
 
